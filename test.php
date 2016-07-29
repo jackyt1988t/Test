@@ -1,8 +1,8 @@
 <?php
     class Test
     {
-	    const rtrim = "/'/";
-	    const space = "/\s+/";
+	const rtrim = "/'/";
+	const space = "/\s+/";
         const ltrim = "/word='/";
         const pattern = "/word='[^']+/";
 
@@ -15,21 +15,21 @@
         {
             $array = preg_split(Test::space, addslashes($val), 20);
 	        foreach ($array as $value)
-            {
-		        $this->value[] = urlencode($value);
+                {
+		    $this->value[] = urlencode($value);
 	        }
         }
 	
-	    public function ShowMorph()
-	    {
-	        if (!$this->morph)
+	public function ShowMorph()
+	{
+	    if (!$this->morph)
 		        echo 'Empty <br>';
 
-	        foreach ($this->morph as $value)
+	    foreach ($this->morph as $value)
             {
-		        echo $value . '<br>';
-	        }
+		echo $value . '<br>';
 	    }
+	}
         public function ShellCommand($command)
         {
 	        foreach($this->value as $value)
