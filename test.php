@@ -50,15 +50,15 @@
         {
             if (preg_match_all(Test::pattern, $presult, $match) == 0)
             {
-		        $this->error['error'] = $presult;
+		$this->error['error'] = $presult;
                 return;
             }
 
             $array = [];
             foreach ($match[0] as $value)
             {
-	            $array[] = rtrim(ltrim($value, Test::ltrim), 
-					           Test::rtrim);
+	        $array[] = rtrim(ltrim($value, Test::ltrim), 
+					      Test::rtrim);
             }
             $this->morph = array_merge($this->morph, 
 				       array_unique($array, SORT_STRING));
