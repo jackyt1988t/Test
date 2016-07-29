@@ -14,10 +14,10 @@
         function __construct($val)
         {
             $array = preg_split(Test::space, addslashes($val), 20);
-	        foreach ($array as $value)
-                {
-		    $this->value[] = urlencode($value);
-	        }
+	    foreach ($array as $value)
+            {
+		$this->value[] = urlencode($value);
+	    }
         }
 	
 	public function ShowMorph()
@@ -32,18 +32,18 @@
 	}
         public function ShellCommand($command)
         {
-	        foreach($this->value as $value)
-	        {
-                    $presult;
-            	    $command = $command . ' ' . $value . ' 2>&1';
-            	    if (($presult = shell_exec($command)) === NULL)
-		        continue;
+	    foreach($this->value as $value)
+	    {
+                $presult;
+            	$command = $command . ' ' . $value . ' 2>&1';
+            	if (($presult = shell_exec($command)) === NULL)
+		    continue;
 
-            	    $this->ParseResult($presult);
-	        }
+            	$this->ParseResult($presult);
+	    }
 	
-	        if (count($this->morph) > 1)
-	    	    $this->morph = array_unique($this->morph, SORT_STRING);
+	    if (count($this->morph) > 1)
+	    	$this->morph = array_unique($this->morph, SORT_STRING);
         }
 
         protected function ParseResult($presult)
@@ -64,6 +64,8 @@
 				       array_unique($array, SORT_STRING));
         }
     }
+    
+    // Проверяем парметр запроса и запускаем логику
     if (isset($_POST['value']) && !empty($_POST['value']))
     {
         $obj = new Test($_POST['value']);
