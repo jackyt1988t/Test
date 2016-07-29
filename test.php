@@ -34,12 +34,12 @@
         {
 	        foreach($this->value as $value)
 	        {
-                $presult;
-            	$command = $command . ' ' . $value . ' 2>&1';
-            	if (($presult = shell_exec($command)) === NULL)
-		            continue;
+                    $presult;
+            	    $command = $command . ' ' . $value . ' 2>&1';
+            	    if (($presult = shell_exec($command)) === NULL)
+		        continue;
 
-            	$this->ParseResult($presult);
+            	    $this->ParseResult($presult);
 	        }
 	
 	        if (count($this->morph) > 1)
