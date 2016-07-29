@@ -58,10 +58,10 @@
             foreach ($match[0] as $value)
             {
 	            $array[] = rtrim(ltrim($value, Test::ltrim), 
-					                           Test::rtrim);
+					           Test::rtrim);
             }
             $this->morph = array_merge($this->morph, 
-				                        array_unique($array, SORT_STRING));
+				       array_unique($array, SORT_STRING));
         }
     }
     if (isset($_POST['value']) && !empty($_POST['value']))
