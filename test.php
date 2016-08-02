@@ -1,6 +1,9 @@
 <?php
     class Test
     {
+        const loop = 20;
+        const size = 1024;
+        const sleep = 1000;
 	const rtrim = "/'/";
 	const space = "/\s+/";
         const ltrim = "/word='/";
@@ -9,41 +12,56 @@
         public $error = '';
         public $morph = [];
 
-        protected $value = [];      
+        protected $value = '';      
 
         function __construct($val)
         {
             $array = preg_split(Test::space, addslashes($val), 20);
 	    foreach ($array as $value)
             {
-		$this->value[] = urlencode($value);
+		 $this->value .= ' ' . urlencode($value);
 	    }
         }
 	
 	public function ShowMorph()
 	{
 	    if (!$this->morph)
-		        echo 'Empty <br>';
+		echo 'Empty <br>';
 
 	    foreach ($this->morph as $value)
             {
 		echo $value . '<br>';
 	    }
 	}
-        public function ShellCommand($command)
+        public function StartFork($command)
         {
-	    foreach($this->value as $value)
-	    {
-                $presult;
-            	$command = $command . ' ' . $value . ' 2>&1';
-            	if (($presult = shell_exec($command)) === NULL)
-		    continue;
-
-            	$this->ParseResult($presult);
-	    }
-	
-	    if (count($this->morph) > 1)
-	    	$this->morph = array_unique($this->morph, SORT_STRING);
+            $ppython = false;
+            $presult;
+            $command = $command . ' ' .  $this->value . ' 2>&1';
+            if (($ppython = popen( $command, "r")) === false)
+            {
+                $this->error['error'] = "Ошибка при в-нии скрипта python";
+                return;
+            }
+            $i = 0;
+            $res = false;
+            while(!feof($ppython))
+            {
+                //if ($i++ > Test::loop)
+                    //usleep(Test::sleep);
+                if (($res = fread($ppython, Test::size)) !== false)
+                {
+                    $presult .= $res;
+                }
+                else
+                {
+                    $this->error['error'] = 'ошибка при чтении данных скрипта python';
+                    break;
+                }
+            }
+            pclose($ppython);
+            if (!$this->error)
+                $this->ParseResult($presult);
         }
 
         protected function ParseResult($presult)
@@ -58,20 +76,17 @@
             foreach ($match[0] as $value)
             {
 	        $array[] = rtrim(ltrim($value, Test::ltrim), 
-					      Test::rtrim);
+					       Test::rtrim);
             }
-            $this->morph = array_merge($this->morph, 
-				       array_unique($array, SORT_STRING));
+            $this->morph = array_unique($array, SORT_STRING);
         }
     }
-    
-    // Проверяем парметр запроса и запускаем логику
     if (isset($_POST['value']) && !empty($_POST['value']))
     {
         $obj = new Test($_POST['value']);
 
-        $obj->ShellCommand('PYTHONIOENCODING=utf8 python3 test.py');
-        if (count($obj->morph) > 0)
+        $obj->StartFork('PYTHONIOENCODING=utf8 python3 test.py');
+        if (!$obj->error)
         {
             echo json_encode( $obj->morph, JSON_UNESCAPED_UNICODE );
         }
